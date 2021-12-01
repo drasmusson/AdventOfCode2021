@@ -4,16 +4,9 @@ PartTwo();
 void PartOne()
 {
     var lines = File.ReadAllLines("Day01/1.txt");
-    var depthMeassurements = lines.Select(int.Parse).ToArray();
+    var depthMeassurements = lines.Select(int.Parse).ToList();
 
-    var increases = 0;
-    var previousMeassurement = depthMeassurements.First();
-    foreach (var depthMeassurement in depthMeassurements)
-    {
-        if (depthMeassurement > previousMeassurement) increases++;
-
-        previousMeassurement = depthMeassurement;
-    }
+    var increases = CountIncreases(depthMeassurements);
 
     Console.WriteLine(increases);
 }
@@ -31,14 +24,19 @@ void PartTwo()
         combinedDepths.Add(combined);
     }
 
+    var increases = CountIncreases(combinedDepths);
+    Console.WriteLine(increases);
+}
+
+int CountIncreases(List<int> depths)
+{
     var increases = 0;
-    var previousMeassurement = combinedDepths.First();
-    foreach (var combinedDepth in combinedDepths)
+    var previousMeassurement = depths.First();
+    foreach (var combinedDepth in depths)
     {
         if (combinedDepth > previousMeassurement) increases++;
 
         previousMeassurement = combinedDepth;
     }
-
-    Console.WriteLine(increases);
+    return increases;
 }
