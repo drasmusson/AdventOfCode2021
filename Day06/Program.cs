@@ -35,26 +35,26 @@ void PartTwo()
     var fishes = line.Split(',').Select(x => int.Parse(x)).ToList();
     var fishGroups = fishes.GroupBy(f => f).ToList();
 
-    var timerCounts = fishGroups.ToDictionary(g => g.Key, g => (long)g.Count());
+    var fishTimers = fishGroups.ToDictionary(g => g.Key, g => (long)g.Count());
 
     for (int i = 0; i < 256; i++)
     {
-        var newTimerCounts = timerCounts.ToDictionary(tc => tc.Key, tc => tc.Value);
+        var newTimerCounts = fishTimers.ToDictionary(tc => tc.Key, tc => tc.Value);
 
-        newTimerCounts[8] = timerCounts.GetValueOrDefault(0);
-        newTimerCounts[7] = timerCounts.GetValueOrDefault(8);
-        newTimerCounts[6] = timerCounts.GetValueOrDefault(7) + timerCounts.GetValueOrDefault(0);
-        newTimerCounts[5] = timerCounts.GetValueOrDefault(6);
-        newTimerCounts[4] = timerCounts.GetValueOrDefault(5);
-        newTimerCounts[3] = timerCounts.GetValueOrDefault(4);
-        newTimerCounts[2] = timerCounts.GetValueOrDefault(3);
-        newTimerCounts[1] = timerCounts.GetValueOrDefault(2);
-        newTimerCounts[0] = timerCounts.GetValueOrDefault(1);
+        newTimerCounts[8] = fishTimers.GetValueOrDefault(0);
+        newTimerCounts[7] = fishTimers.GetValueOrDefault(8);
+        newTimerCounts[6] = fishTimers.GetValueOrDefault(7) + fishTimers.GetValueOrDefault(0);
+        newTimerCounts[5] = fishTimers.GetValueOrDefault(6);
+        newTimerCounts[4] = fishTimers.GetValueOrDefault(5);
+        newTimerCounts[3] = fishTimers.GetValueOrDefault(4);
+        newTimerCounts[2] = fishTimers.GetValueOrDefault(3);
+        newTimerCounts[1] = fishTimers.GetValueOrDefault(2);
+        newTimerCounts[0] = fishTimers.GetValueOrDefault(1);
 
-        timerCounts = newTimerCounts.ToDictionary(tc => tc.Key, tc => tc.Value);
+        fishTimers = newTimerCounts.ToDictionary(tc => tc.Key, tc => tc.Value);
     }
 
-    Console.WriteLine(timerCounts.Values.Sum());
+    Console.WriteLine(fishTimers.Values.Sum());
 }
 
 internal class LanternFish
