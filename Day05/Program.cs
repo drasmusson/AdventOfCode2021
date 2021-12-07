@@ -1,4 +1,6 @@
-﻿PartOne();
+﻿//https://adventofcode.com/2021/day/5
+
+PartOne();
 PartTwo();
 
 void PartOne()
@@ -13,7 +15,7 @@ void PartOne()
     }
 
     inputCoordinates = inputCoordinates.Where(ic => (ic.Item1.Item1 == ic.Item2.Item1 || ic.Item1.Item2 == ic.Item2.Item2)).ToList();
-    
+
     var coordinates = new List<(int, int)>();
     foreach (var inputCoordinate in inputCoordinates)
     {

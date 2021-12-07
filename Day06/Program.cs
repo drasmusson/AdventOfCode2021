@@ -1,4 +1,6 @@
-﻿PartOne();
+﻿//https://adventofcode.com/2021/day/6
+
+PartOne();
 PartTwo();
 
 Console.WriteLine("Hello, World!");
