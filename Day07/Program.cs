@@ -9,7 +9,6 @@ void PartOne()
     var crabPositions = line.Split(',').Select(x => int.Parse(x)).ToList();
 
     crabPositions.Sort();
-
     var positionRange = Enumerable.Range(crabPositions[0], crabPositions.Last() - crabPositions[0]).ToList();
 
     var fuelcostsForPosition = new List<int>();
