@@ -1,4 +1,5 @@
 ﻿PartOne();
+PartTwo();
 
 void PartOne()
 {
@@ -29,12 +30,87 @@ void PartOne()
     Console.WriteLine(result);
 }
 
+void PartTwo()
+{
+    var lines = File.ReadAllLines("Day09/1.txt").ToList();
+    lines = lines.Select(l => "9" + l + "9").ToList();
+    lines.Insert(0, new string('9', lines[0].Length));
+    lines.Add(new string('9', lines[0].Length));
+
+    var locations = new List<LocationV2>();
+    for (int y = 1; y < lines.Count - 1; y++)
+    {
+        for (int x = 1; x < lines[y].Length - 1; x++)
+        {
+            locations.Add(
+                new LocationV2(lines[y][x], new Coord(x, y)));
+        }
+    }
+
+    foreach (var location in locations)
+    {
+        location.AddNeighbours(locations);
+    }
+
+    var basins = locations.Where(l => l.IsLowPoint).Select(l => l.GetParentCount(0)).ToList();
+    basins.Sort();
+    basins.Reverse();
+    var largestBasins = basins.Take(3);
+    var result = largestBasins.Sum();
+    Console.WriteLine(result);
+}
+
+internal class LocationV2
+{
+    public List<LocationV2> Neighbours { get; private set; }
+    public bool IsLowPoint => Neighbours.All(n => n.Depth > Depth);
+    public int RiskLevel => Depth + 1;
+    public int Depth { get; private set; }
+    public Coord Coord { get; private set; }
+    private bool IsCounted;
+
+    public LocationV2(char depth, Coord coord)
+    {
+        Depth = int.Parse(depth.ToString());
+        Coord = coord;
+        Neighbours = new List<LocationV2>();
+    }
+    public int GetParentCount(int parentCount)
+    {
+        if (IsCounted || Depth == 9)
+        {
+            return parentCount;
+        }
+        parentCount++;
+        IsCounted = true;
+        var higherNeighbours = Neighbours.Where(n => n.Depth > Depth).ToList();
+
+        var parentCountSum = higherNeighbours.Select(n => n.GetParentCount(parentCount)).Sum();
+
+        return parentCountSum + parentCountSum;
+    }
+    public void AddNeighbours(List<LocationV2> locations)
+    {
+        Neighbours = locations.Where(l =>
+            l.Coord.IsNextToCoord(Coord)).ToList();
+    }
+}
+
+internal record Coord (int X, int Y)
+{
+    public bool IsNextToCoord(Coord coord) => 
+        (coord.X - 1 == X && coord.Y == Y) ||
+        (coord.X + 1 == X && coord.Y == Y) ||
+        (coord.X == X && coord.Y - 1 == Y) ||
+        (coord.X == X && coord.Y + 1 == Y);
+}
+
 internal class Location
 {
-    public int Depth { get; private set; }
     public List<int> Neighbours { get; private set; }
     public bool IsLowPoint => Neighbours.All(n => n > Depth);
     public int RiskLevel => Depth + 1;
+    private int Depth;
     public Location(char depth, List<char> neighbours)
     {
         Depth = int.Parse(depth.ToString());
