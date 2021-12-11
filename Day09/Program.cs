@@ -52,11 +52,18 @@ void PartTwo()
         location.AddNeighbours(locations);
     }
 
-    var basins = locations.Where(l => l.IsLowPoint).Select(l => l.GetParentCount(0)).ToList();
+    var lowPoints = locations.Where(l => l.IsLowPoint).ToList();
+    var basins = new List<int>();
+    foreach (var lowPoint in lowPoints)
+    {
+        var neighbours = new List<LocationV2>();
+        lowPoint.GetParents(neighbours);
+        basins.Add(neighbours.Count);
+    }
     basins.Sort();
     basins.Reverse();
     var largestBasins = basins.Take(3);
-    var result = largestBasins.Sum();
+    var result = largestBasins.Aggregate((a, x) => a * x);
     Console.WriteLine(result);
 }
 
@@ -67,7 +74,6 @@ internal class LocationV2
     public int RiskLevel => Depth + 1;
     public int Depth { get; private set; }
     public Coord Coord { get; private set; }
-    private bool IsCounted;
 
     public LocationV2(char depth, Coord coord)
     {
@@ -75,20 +81,24 @@ internal class LocationV2
         Coord = coord;
         Neighbours = new List<LocationV2>();
     }
-    public int GetParentCount(int parentCount)
+
+    public List<LocationV2> GetParents(List<LocationV2> parents)
     {
-        if (IsCounted || Depth == 9)
+        if (parents.Contains(this))
         {
-            return parentCount;
+            return parents;
         }
-        parentCount++;
-        IsCounted = true;
-        var higherNeighbours = Neighbours.Where(n => n.Depth > Depth).ToList();
-
-        var parentCountSum = higherNeighbours.Select(n => n.GetParentCount(parentCount)).Sum();
-
-        return parentCountSum + parentCountSum;
+        parents.Add(this);
+        var higherNeighbours = Neighbours.Where(n => n.Depth > Depth && n.Depth != 9).ToList();
+        if (higherNeighbours.Count == 0)
+        {
+            return parents;
+        }
+        var tree = higherNeighbours.SelectMany(n => n.GetParents(parents)).ToList();
+        parents = tree.Distinct().ToList();
+        return parents;
     }
+
     public void AddNeighbours(List<LocationV2> locations)
     {
         Neighbours = locations.Where(l =>
