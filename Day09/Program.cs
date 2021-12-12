@@ -1,4 +1,5 @@
-﻿PartOne();
+﻿https://adventofcode.com/2021/day/9
+PartOne();
 PartTwo();
 
 void PartOne()
