@@ -1,7 +1,6 @@
-﻿https://adventofcode.com/2021/day/11
+﻿//https://adventofcode.com/2021/day/11
 PartOne();
-
-Console.WriteLine("Hello, World!");
+PartTwo();
 
 void PartOne()
 {
@@ -23,7 +22,7 @@ void PartOne()
         {
             octopus.IncreaseEnergyLevel();
         }
-        var firstFlashedOctopusses = cave.Values.Where(o => o.Flashed);
+        var firstFlashedOctopusses = cave.Values.Where(o => o.Flashed).ToList();
 
         foreach (var flashedOctopus in firstFlashedOctopusses)
         {
@@ -40,6 +39,49 @@ void PartOne()
         }
     }
     Console.WriteLine(totalFlashes);
+}
+
+void PartTwo()
+{
+    var input = File.ReadAllLines("Day11/1.txt");
+    var cave = new Dictionary<Coordinate, Octopus>();
+    for (int y = 0; y < input.Length; y++)
+    {
+        for (int x = 0; x < input[y].Length; x++)
+        {
+            cave.Add(new Coordinate(x, y), new Octopus(new Coordinate(x, y), int.Parse(input[y][x].ToString())));
+        }
+    }
+
+    var synchronizedStep = 1;
+
+    while(true)
+    {
+        foreach (var octopus in cave.Values)
+        {
+            octopus.IncreaseEnergyLevel();
+        }
+        var firstFlashedOctopusses = cave.Values.Where(o => o.Flashed).ToList();
+
+        foreach (var flashedOctopus in firstFlashedOctopusses)
+        {
+            IncreaseNeighbours(cave, flashedOctopus);
+        }
+
+        if (cave.Values.Where(o => o.Flashed).Count() == cave.Values.Count())
+        {
+            break;
+        }
+        foreach (var octopus in cave.Values)
+        {
+            if (octopus.Flashed)
+            {
+                octopus.Reset();
+            }
+        }
+        synchronizedStep++;
+    }
+    Console.WriteLine(synchronizedStep);
 }
 
 void IncreaseNeighbours(Dictionary<Coordinate, Octopus> cave, Octopus flashedOctopus)
