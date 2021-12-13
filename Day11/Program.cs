@@ -101,13 +101,11 @@ void IncreaseNeighbours(Dictionary<Coordinate, Octopus> cave, Octopus flashedOct
 
 internal class Octopus
 {
-    public Coordinate Coordinate { get; set; }
     public int EnergyLevel { get; private set; }
     public bool Flashed { get; private set; }
     public IEnumerable<Coordinate> NeighbouringCoordinates { get; private set; }
     public Octopus(Coordinate coordinate, int initialEnergyLevel)
     {
-        Coordinate = coordinate;
         NeighbouringCoordinates = GetNeighbouringCoordinates(coordinate);
         EnergyLevel = initialEnergyLevel;
     }
