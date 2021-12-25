@@ -1,5 +1,7 @@
 ﻿// https://adventofcode.com/2021/day/15
 
+using System.Diagnostics;
+
 PartOne();
 PartTwo();
 
@@ -51,7 +53,6 @@ void PartTwo()
     }
 
     cave[new Coord(0, 0)].RiskSum = 0L;
-
     TraverseAndAddRiskSums(cave);
     var width = int.Parse(Math.Sqrt(cave.Count).ToString()) - 1;
     var endCoord = new Coord(width, width);
@@ -61,8 +62,8 @@ void PartTwo()
 
 void TraverseAndAddRiskSums(Dictionary<Coord, Node> cave)
 {
-    var queue = new Queue<Coord>();
-    queue.Enqueue(new Coord(0, 0));
+    var queue = new PriorityQueue<Coord, long>();
+    queue.Enqueue(new Coord(0, 0), 0);
     do
     {
         var currentCoord = queue.Dequeue();
@@ -74,11 +75,11 @@ void TraverseAndAddRiskSums(Dictionary<Coord, Node> cave)
                 if (currentNode.RiskSum + neighbourNode.Risk < neighbourNode.RiskSum)
                 {
                     neighbourNode.RiskSum = currentNode.RiskSum + neighbourNode.Risk;
-                    queue.Enqueue(neighbourCoord);
+                    queue.Enqueue(neighbourCoord, neighbourNode.RiskSum);
                 }
             }
         }
-    } while (queue.Any());
+    } while (queue.Count > 0);
 }
 
 IEnumerable<Coord> GetNeighbouringCoords(Coord coord)
